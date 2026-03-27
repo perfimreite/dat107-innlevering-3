@@ -2,6 +2,7 @@ package no.hvl.dat107.dao;
 
 import jakarta.persistence.*;
 import no.hvl.dat107.entity.Ansatt;
+import no.hvl.dat107.entity.Avdeling;
 
 import java.util.List;
 
@@ -53,6 +54,25 @@ public class AnsattDAO {
         }
     }
 
+    public void listAnsatteVedAvdeling(int avdelingId) {
+        EntityManager em = emf.createEntityManager();
+
+        String query = "select a from Ansatt a where a.avdeling.id = :avdelingId order by a.id";
+
+        try {
+            Avdeling avdeling = new AvdelingDAO().finnAvdelingMedId(avdelingId);
+            System.out.println("Alle ansatte ved avdeling " + avdeling.getNavn() + ":");
+            for (Ansatt a : em.createQuery(query, Ansatt.class).setParameter("avdelingId", avdelingId).getResultList()) {
+                if (avdeling.getSjef().getId() == a.getId()) {
+                    System.out.println("SJEF:");
+                }
+                System.out.println("    " + a.toString());
+            }
+        } finally {
+            em.close();
+        }
+    }
+
     public void oppdaterAnsattStilling(int id, String stilling) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
@@ -61,6 +81,31 @@ public class AnsattDAO {
             tx.begin();
             Ansatt ansatt = em.find(Ansatt.class, id);
             ansatt.setStilling(stilling);
+            tx.commit();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            tx.rollback();
+        }
+        finally {
+            em.close();
+        }
+    }
+
+    public void oppdaterAnsattAvdeling(int id, int avdelingId) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = em.getTransaction();
+
+        try {
+            tx.begin();
+
+            Ansatt ansatt = em.find(Ansatt.class, id);
+            AvdelingDAO avdelingDAO = new AvdelingDAO();
+            Avdeling ansattAvdeling = avdelingDAO.finnAvdelingMedId(ansatt.getId());
+
+            if (ansatt.getId() != ansattAvdeling.getSjef().getId()) {
+                ansatt.setAvdeling(avdelingDAO.finnAvdelingMedId(avdelingId));
+            }
+
             tx.commit();
         } catch (Throwable e) {
             e.printStackTrace();

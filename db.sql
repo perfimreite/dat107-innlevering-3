@@ -2,6 +2,11 @@ DROP SCHEMA IF EXISTS dat107_innlevering_3 CASCADE;
 CREATE SCHEMA dat107_innlevering_3;
 SET search_path TO dat107_innlevering_3;
 
+CREATE TABLE avdeling (
+    id   SERIAL PRIMARY KEY,
+    navn VARCHAR(30) UNIQUE NOT NULL
+);
+
 CREATE TABLE ansatt (
     id             SERIAL PRIMARY KEY,
     brukernavn     VARCHAR(30) UNIQUE NOT NULL,
@@ -11,11 +16,6 @@ CREATE TABLE ansatt (
     stilling       VARCHAR(30) NOT NULL,
     manedslonn     INTEGER     NOT NULL,
     avdeling_id    INTEGER NOT NULL REFERENCES avdeling ON DELETE RESTRICT
-);
-
-CREATE TABLE avdeling (
-    id   SERIAL PRIMARY KEY,
-    navn VARCHAR(30) UNIQUE NOT NULL
 );
 
 ALTER TABLE avdeling ADD COLUMN sjef_id INTEGER UNIQUE;
@@ -41,5 +41,4 @@ UPDATE avdeling SET sjef_id = (SELECT id FROM ansatt WHERE brukernavn = 'lhp') W
 UPDATE avdeling SET sjef_id = (SELECT id FROM ansatt WHERE brukernavn = 'sjo') WHERE id = 2;
 
 SELECT * FROM ansatt;
-
 SELECT * FROM avdeling;

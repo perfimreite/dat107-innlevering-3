@@ -24,7 +24,7 @@ public class Avdeling {
         return "Avdeling{" +
                 "id=" + id +
                 ", navn='" + navn + '\'' +
-                ", sjef=" + sjef +
+                ", sjef_id=" + sjef.getId() +
                 '}';
     }
 

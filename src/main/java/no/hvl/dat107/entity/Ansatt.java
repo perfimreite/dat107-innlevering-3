@@ -38,9 +38,10 @@ public class Ansatt {
                 ", brukernavn='" + brukernavn + '\'' +
                 ", fornavn='" + fornavn + '\'' +
                 ", etternavn='" + etternavn + '\'' +
-                ", ansettelsedato=" + ansettelsedato+
+                ", ansettelsedato=" + ansettelsedato +
                 ", stilling='" + stilling + '\'' +
                 ", manedslonn=" + manedslonn +
+                ", avdeling=" + avdeling +
                 '}';
     }
 
