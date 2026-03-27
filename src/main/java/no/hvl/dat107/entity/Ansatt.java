@@ -17,6 +17,17 @@ public class Ansatt {
     private String stilling;
     private int manedslonn;
 
+    public Ansatt() {}
+
+    public Ansatt(String brukernavn, String fornavn, String etternavn, String stilling, int manedslonn) {
+        this.brukernavn = brukernavn;
+        this.fornavn = fornavn;
+        this.etternavn = etternavn;
+        this.ansettelsedato = LocalDate.now();
+        this.stilling = stilling;
+        this.manedslonn = manedslonn;
+    }
+
     @Override
     public String toString() {
         return "Ansatt{" +
