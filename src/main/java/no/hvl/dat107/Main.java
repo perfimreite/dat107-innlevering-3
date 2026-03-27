@@ -1,6 +1,7 @@
 package no.hvl.dat107;
 
 import no.hvl.dat107.dao.AnsattDAO;
+import no.hvl.dat107.dao.AvdelingDAO;
 import no.hvl.dat107.entity.Ansatt;
 
 import java.util.Scanner;
@@ -8,10 +9,11 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         AnsattDAO ansattDAO = new AnsattDAO();
+        AvdelingDAO avdelingDAO = new AvdelingDAO();
 
         Scanner s = new Scanner(System.in);
 
-        boolean quit = false;
+        boolean quit = true;
         while (!quit) {
             System.out.println("-----");
             System.out.println("(0) Avslutt");
@@ -71,7 +73,10 @@ public class Main {
                     System.out.print("månedslønn: ");
                     int manedslonn = s.nextInt(); s.nextLine();
 
-                    Ansatt ansatt = new Ansatt(brukernavn, fornavn, etternavn, stilling, manedslonn);
+                    System.out.print("avdeling id: ");
+                    int avdelingId = s.nextInt(); s.nextLine();
+
+                    Ansatt ansatt = new Ansatt(brukernavn, fornavn, etternavn, stilling, manedslonn, avdelingId);
                     ansattDAO.leggTilAnsatt(ansatt);
                 } break;
             }

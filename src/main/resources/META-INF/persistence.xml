@@ -7,6 +7,7 @@
     <persistence-unit name="dat107-innlevering-3" transaction-type="RESOURCE_LOCAL">
 
         <class>no.hvl.dat107.entity.Ansatt</class>
+        <class>no.hvl.dat107.entity.Avdeling</class>
 
         <properties>
             <!--  Generelle JPA properties -->

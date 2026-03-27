@@ -3,12 +3,12 @@ package no.hvl.dat107.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
+import no.hvl.dat107.dao.AvdelingDAO;
 
 @Entity
 @Table(schema = "dat107_innlevering_3")
 public class Ansatt {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String brukernavn;
     private String fornavn;
@@ -16,16 +16,19 @@ public class Ansatt {
     private LocalDate ansettelsedato;
     private String stilling;
     private int manedslonn;
+    @OneToOne @JoinColumn(name = "avdeling_id")
+    private Avdeling avdeling;
 
     public Ansatt() {}
 
-    public Ansatt(String brukernavn, String fornavn, String etternavn, String stilling, int manedslonn) {
+    public Ansatt(String brukernavn, String fornavn, String etternavn, String stilling, int manedslonn, int avdelingId) {
         this.brukernavn = brukernavn;
         this.fornavn = fornavn;
         this.etternavn = etternavn;
         this.ansettelsedato = LocalDate.now();
         this.stilling = stilling;
         this.manedslonn = manedslonn;
+        this.avdeling = new AvdelingDAO().finnAvdelingMedId(avdelingId);
     }
 
     @Override
@@ -95,5 +98,13 @@ public class Ansatt {
 
     public void setManedslonn(int manedslonn) {
         this.manedslonn = manedslonn;
+    }
+
+    public Avdeling getAvdeling() {
+        return avdeling;
+    }
+
+    public void setAvdeling(Avdeling avdeling) {
+        this.avdeling = avdeling;
     }
 }
