@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import no.hvl.dat107.entity.Ansatt;
 import no.hvl.dat107.entity.Avdeling;
 
-import java.util.List;
-
 public class AnsattDAO {
     private EntityManagerFactory emf;
 

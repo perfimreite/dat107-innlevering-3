@@ -1,6 +1,8 @@
 package no.hvl.dat107.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.*;
 import no.hvl.dat107.dao.AvdelingDAO;
@@ -18,6 +20,8 @@ public class Ansatt {
     private int manedslonn;
     @OneToOne @JoinColumn(name = "avdeling_id")
     private Avdeling avdeling;
+    @OneToMany(mappedBy="ansatt")
+    private List<ProsjektDeltagelse> deltagelser;
 
     public Ansatt() {}
 
@@ -29,6 +33,15 @@ public class Ansatt {
         this.stilling = stilling;
         this.manedslonn = manedslonn;
         this.avdeling = new AvdelingDAO().finnAvdelingMedId(avdelingId);
+        this.deltagelser = new ArrayList<>();
+    }
+
+    public void leggTilProsjektDeltagelse(ProsjektDeltagelse prosjektdeltagelse) {
+        deltagelser.add(prosjektdeltagelse);
+    }
+
+    public void fjernProsjektDeltagelse(ProsjektDeltagelse prosjektdeltagelse) {
+        deltagelser.remove(prosjektdeltagelse);
     }
 
     @Override
@@ -107,5 +120,13 @@ public class Ansatt {
 
     public void setAvdeling(Avdeling avdeling) {
         this.avdeling = avdeling;
+    }
+
+    public List<ProsjektDeltagelse> getDeltagelser() {
+        return deltagelser;
+    }
+
+    public void setDeltagelser(List<ProsjektDeltagelse> deltagelser) {
+        this.deltagelser = deltagelser;
     }
 }

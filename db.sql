@@ -19,12 +19,21 @@ CREATE TABLE ansatt (
 );
 
 ALTER TABLE avdeling ADD COLUMN sjef_id INTEGER UNIQUE;
+ALTER TABLE avdeling ADD CONSTRAINT avdeling_sjef_fk FOREIGN KEY (sjef_id) REFERENCES ansatt(id) ON DELETE RESTRICT;
 
-ALTER TABLE avdeling
-    ADD CONSTRAINT avdeling_sjef_fk
-        FOREIGN KEY (sjef_id)
-            REFERENCES ansatt(id)
-            ON DELETE RESTRICT;
+CREATE TABLE prosjekt (
+    id          SERIAL PRIMARY KEY,
+    navn        VARCHAR(30) NOT NULL,
+    beskrivelse TEXT
+);
+
+CREATE TABLE prosjekt_deltagelse(
+    prosjekt_id INTEGER REFERENCES prosjekt ON DELETE RESTRICT,
+    ansatt_id   INTEGER REFERENCES ansatt ON DELETE RESTRICT,
+    rolle       VARCHAR(30),
+    timer       INTEGER CHECK (timer >= 0),
+    PRIMARY KEY (prosjekt_id, ansatt_id)
+);
 
 INSERT INTO avdeling (navn) VALUES
     ('IT'),
@@ -40,5 +49,27 @@ INSERT INTO ansatt (brukernavn, fornavn, etternavn, stilling, manedslonn, avdeli
 UPDATE avdeling SET sjef_id = (SELECT id FROM ansatt WHERE brukernavn = 'lhp') WHERE id = 1;
 UPDATE avdeling SET sjef_id = (SELECT id FROM ansatt WHERE brukernavn = 'sjo') WHERE id = 2;
 
+INSERT INTO prosjekt (navn, beskrivelse) VALUES
+    ('Nettbutikk 2.0', 'Ny selvbetjeningsportal for B2C-kunder med betalingsløsning og lagerintegrasjon.'),
+    ('CRM-overgang', 'Migrering fra gamle Excel-lister til moderne CRM-system for salgsavdelingen.');
+
+WITH data AS (
+    SELECT * FROM (VALUES
+        ('lhp', 'Nettbutikk 2.0',   'Prosjektleder',     125),
+        ('mab', 'Nettbutikk 2.0',   'Full-stack utvikler', 200),
+        ('kai', 'Nettbutikk 2.0',   'Testkoordinator',   80),
+        ('sjo', 'CRM-overgang',     'Sponsor / bestiller', 30),
+        ('ema', 'CRM-overgang',     'Superbruker / test',  60)
+    ) AS t(bruker, prosjekt, rolle, timer)
+)
+
+INSERT INTO prosjekt_deltagelse(prosjekt_id, ansatt_id, rolle, timer)
+SELECT p.id, a.id, d.rolle, d.timer
+FROM data d
+JOIN ansatt a ON a.brukernavn = d.bruker
+JOIN prosjekt p ON p.navn = d.prosjekt;
+
 SELECT * FROM ansatt;
 SELECT * FROM avdeling;
+SELECT * FROM prosjekt;
+SELECT * FROM prosjekt_deltagelse;
